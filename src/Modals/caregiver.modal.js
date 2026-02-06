@@ -1,57 +1,70 @@
 const mongoose = require("mongoose");
 
 const caregiverSchema = new mongoose.Schema({
-    firstName: {
-        type: String,
-        required: true
-    },
-    lastName: {
-        type: String,
-        required: true
-    },
+
+    firstName: { type: String, required: true, trim: true },
+    lastName: { type: String, required: true, trim: true },
+
     googleId: {
         type: String,
         required: true,
         unique: true,
         select: false
     },
+
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true
     },
+
     qualifications: {
         type: [String],
-        required: true
+        default: []
     },
-    ratings: {
+
+    ratingAverage: {
         type: Number,
-        enum: [0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5],
-        default: 0,
+        min: 0,
         max: 5,
-        min: 0
+        default: 0
     },
-    reviews: {
-        type: [{ userId: mongoose.Schema.Types.ObjectId, review: String, rating: { type: Number, enum: [0, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5], max: 5, min: 0 }, likes: { type: Number, default: 0 }, dislikes: { type: Number, default: 0 } }],
-        default: []
+
+    totalReviews: {
+        type: Number,
+        default: 0
     },
-    patientsRequested: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'UserModal',
-        default: []
-    },
-    allTimesPatientsServed: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'BookingModal',
-        default: []
-    },
+
     mobileNumber: {
         type: String,
         required: true,
+        match: /^[0-9]{10}$/,
         select: false
+    },
+
+    verificationDocuments: [String],
+
+    verified: {
+        type: Boolean,
+        default: false
+    },
+
+    verifiedAt: Date,
+
+    readyForService: {
+        type: Boolean,
+        default: false
+    },
+
+    profilePicture: {
+        type: String,
+        default: null
     }
 
 }, { timestamps: true });
+
 
 const CaregiverModal = mongoose.model("CaregiverModal", caregiverSchema);
 module.exports = CaregiverModal;

@@ -1,47 +1,78 @@
 const mongoose = require("mongoose");
 
 const userModalSchema = new mongoose.Schema({
+
     firstName: {
         type: String,
-        required: true
+        required: true,
+        trim: true,
+        index: true 
     },
+
     lastName: {
         type: String,
-        required: true
+        required: true,
+        trim: true,
+        index: true 
     },
+
+    role: {
+        type: String,
+        enum: ["family", "user"],
+        default: "family"
+    },
+
+    address: {
+        fullAddress: String,
+        city: String,
+        state: String,
+        pincode: String,
+        coordinates: {
+            lat: Number,
+            lng: Number
+        }
+    },
+
     googleId: {
         type: String,
         required: true,
         unique: true,
-        select: false
+        select: false,
+        index: true 
     },
-    age: {
-        type: Number,
+
+    dateOfBirth: {
+        type: Date,
         required: true
     },
+
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true,
+        index: true 
     },
-    medicalNeeds: {
-        type: [String],
-        required: true
+
+    mobileNumber: {
+        type: String,
+        required: true,
+        match: /^[0-9]{10}$/,
+        select: false
     },
-    allTimesServies: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'ServicesModal',
-        default: []
+
+    profilePicture: {
+        type: String,
+        default: null
     },
-    serviceStatus: {
-        type:[mongoose.Schema.Types.ObjectId],
-        ref: 'BookingModal',
-        default: []
+
+    lastActiveAt: {
+        type: Date,
+        default: null
     }
 
-}, {
-    timestamps: true
-});
+}, { timestamps: true });
 
 const UserModal = mongoose.model("UserModal", userModalSchema);
 module.exports = UserModal;

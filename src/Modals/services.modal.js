@@ -21,14 +21,16 @@ const servicesModalSchema = new mongoose.Schema({
     },
     requiredQualifications: {
         type: [String],
+        required: true,
+        default: []
+    },
+    creatorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'adminModal',
         required: true
     },
-    applicants: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'ServiceAgentModal',
-        default: []
-    }
-});
+    
+}, { timestamps: true });
 
 const ServicesModal = mongoose.model("ServicesModal", servicesModalSchema);
 module.exports = ServicesModal;
