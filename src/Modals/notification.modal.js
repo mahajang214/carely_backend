@@ -53,7 +53,11 @@ const notificationSchema = new mongoose.Schema({
             "payment",
             "service",
             "system",
-            "emergency"
+            "emergency",
+            "relationship_request",
+            "relationship_response",
+            "general",
+            "event_notification"
         ],
         default: "system"
     },
@@ -67,6 +71,10 @@ const notificationSchema = new mongoose.Schema({
         type: String,
         enum: ["BookingModal", "ComplaintModal", "ServicesModal", "ReviewModal"]
     },
+    bookingId: {
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: "BookingModal"
+    },
 
     isRead: {
         type: Boolean,
@@ -75,4 +83,6 @@ const notificationSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-module.exports = mongoose.model("NotificationModal", notificationSchema);
+const NotificationModal = mongoose.model("NotificationModal", notificationSchema);
+
+module.exports = NotificationModal

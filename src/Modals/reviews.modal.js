@@ -10,14 +10,21 @@ const reviewSchema = new mongoose.Schema({
 
     patientId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "PatientModal",
-        required: true
+        ref: "PatientModal"
     },
 
     bookingId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "BookingModal",
         required: true
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserModal",
+        required: true
+    },
+    category:{
+        type:String
     },
 
     review: String,

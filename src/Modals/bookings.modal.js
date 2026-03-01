@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const bookingModalSchema = new mongoose.Schema({
 
+    // 🔹 Relations
     caregiverId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'CaregiverModal',
-        required: true
+        ref: 'CaregiverModal'
     },
 
     serviceId: {
@@ -16,8 +16,7 @@ const bookingModalSchema = new mongoose.Schema({
 
     patientId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'PatientModal',
-        required: true
+        ref: 'PatientModal'
     },
 
     userId: {
@@ -26,35 +25,56 @@ const bookingModalSchema = new mongoose.Schema({
         required: true
     },
 
-    requestStatus: {
+    // 🔹 Booking Lifecycle
+    bookingStatus: {
         type: String,
-        enum: ['pending', 'accepted', 'rejected'],
-        default: 'pending'
+        enum: [
+            'pending',
+            'accepted',
+            'rejected',
+            'scheduled',
+            'in-progress',
+            'completed',
+            'cancelled'
+        ],
+        default: 'pending',
+        index: true
     },
 
-    serviceStatus: {
-        type: String,
-        enum: ['scheduled', 'in-progress', 'completed', 'cancelled'],
-        default: 'scheduled'
-    },
-
-    bookingType: {
-        type: String,
-        enum: ["hourly", "daily", "long-term"],
-        required: true
-    },
-
+    // 🔹 Schedule
     schedule: {
-        startDate: Date,
+        startDate: { type: Date, required: true },
         endDate: Date,
         timeSlot: String
     },
+    // 🔹 Duration (Better Structure)
+    duration: {
+        hours: {
+            type: Number,
+            required: true
+        },
+        pricePerDay: {
+            type: Number,
+            required: true
+        }
+    },
 
-    servicePrice: {
+    totalDays: {
         type: Number,
         required: true
     },
 
+    pricing: {
+        basePrice: Number,
+        platformFee: { type: Number, default: 0 },
+        tax: { type: Number, default: 0 },
+        discount: { type: Number, default: 0 },
+        finalPerDay: Number
+    },
+
+    grandTotal: Number,
+
+    // 🔹 Payment
     paymentMethod: {
         type: String,
         enum: ["upi", "card", "cash"],
@@ -63,26 +83,73 @@ const bookingModalSchema = new mongoose.Schema({
 
     paymentStatus: {
         type: String,
-        enum: ['pending', 'paid', 'failed'],
+        enum: ['pending', 'paid', 'failed', 'refunded'],
         default: 'pending'
     },
 
-    TransactionModal: {
+    transactionId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "TransactionModal"
     },
 
-    cancellationReason: String,
+    // 🔹 Cancellation
+    cancellation: {
+        cancelledBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            refPath: "cancellation.cancelledByModel"
+        },
+        cancelledByModel: {
+            type: String,
+            enum: ["UserModal", "CaregiverModal", "AdminModal"]
+        },
+        reason: String,
+        cancelledAt: Date,
+        refundStatus: {
+            type: String,
+            enum: ["none", "initiated", "completed"]
+        }
+    },
 
-    careNotes: [{
-        from: String,
-        to: String,
-        note: String,
-        date: Date,
-        isRead: { type: Boolean, default: false }
-    }]
+    // 🔹 Notes
+    careNotes: {
+        type: [
+            {
+                note: {
+                    type: String,
+                    required: true
+                },
+                addedBy: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    refPath: "careNotes.roleModel"
+                },
+                roleModel: {
+                    type: String,
+                    enum: ["UserModal", "CaregiverModal", "AdminModal"]
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now
+                },
+                senderRole: {
+                    type: String,
+                    enum: ["user", "member", "caregiver", "admin"],
+                    required: true
+                }
+            }
+        ],
+        default: [] // 🔥 THIS PREVENTS PUSH ERROR
+    },
+
+    bookingServiceCategory: {
+        type: String,
+        required: true
+    },
+
 
 }, { timestamps: true });
+
+bookingModalSchema.index({ userId: 1, createdAt: -1 });
+bookingModalSchema.index({ caregiverId: 1, bookingStatus: 1 });
 
 
 const BookingModal = mongoose.model("BookingModal", bookingModalSchema);

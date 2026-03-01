@@ -1,0 +1,223 @@
+const BookingModal = require("../../Modals/bookings.modal");
+const CaregiverModal = require("../../Modals/caregiver.modal");
+const sendMail = require("../../utils/sendMail");
+
+
+const getMyBookings = async (req, res) => {
+  try {
+    const { status } = req.query;
+
+    const filter = { caregiverId: req.client.id };
+
+    if (status) {
+      filter.status = status;
+    }
+
+    const bookings = await BookingModal.find(filter)
+      .populate({
+        path: "patientId",
+        // remove select if you truly want ALL fields
+        // select: "firstName lastName age gender mobileNumber address"
+      })
+      .populate({
+        path: "userId",
+        select: "firstName lastName mobileNumber profilePicture",
+      })
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      data: bookings,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch bookings",
+    });
+  }
+};
+
+const acceptBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+    // 1️⃣ Update booking
+    const booking = await BookingModal.findOneAndUpdate(
+      { _id: bookingId },
+      {
+        caregiverId: req.client.id || req.client._id,
+        bookingStatus: "accepted",
+      },
+      { new: true }
+    ).populate("userId", "email firstName lastName"); // 👈 populate here
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    // 2️⃣ Extract user email
+    const userEmail = booking?.userId?.email;
+
+    if (!userEmail) {
+      return res.status(400).json({
+        success: false,
+        message: "User email not found",
+      });
+    }
+
+    // 3️⃣ Send Email
+    await sendMail({
+      to: userEmail,
+      subject: "Caregiver Accepted Your Booking",
+      text: `Hello ${booking.userId.firstName},
+
+Your booking for ${booking.bookingServiceCategory} has been accepted by the caregiver.
+
+Start Date: ${booking.schedule.startDate.toDateString()}
+Time Slot: ${booking.schedule.timeSlot}
+
+Thank you for choosing our service ❤️
+      `,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Booking accepted and email sent",
+      data: booking,
+    });
+  } catch (error) {
+    console.error("Accept Booking Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to accept booking",
+    });
+  }
+};
+
+const cancleBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+    const booking = await BookingModal.findOneAndUpdate(
+      { _id: bookingId, caregiverId: req.client.id },
+      { status: "rejected" },
+      { new: true }
+    );
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Booking rejected",
+      data: booking,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to reject booking",
+    });
+  }
+};
+
+const updateBookingStatus = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const { status } = req.body;
+
+    const caregiverId = req.client._id || req.client.id;
+
+    const allowedStatuses = ["accepted", "in-progress", "completed"];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status value",
+      });
+    }
+
+    // Update booking
+    const booking = await BookingModal.findOneAndUpdate(
+      { _id: bookingId, caregiverId: caregiverId },
+      { bookingStatus: status },
+      { new: true }
+    );
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    // If completed → Add earnings
+    // if (status === "completed") {
+    //   await CaregiverModal.findByIdAndUpdate(
+    //     caregiverId,
+    //     {
+    //       $inc: { totalEarning: booking.grandTotal }
+    //     },
+    //     { new: true }
+    //   );
+    // }
+
+    return res.status(200).json({
+      success: true,
+      message: "Status updated successfully",
+      data: booking,
+    });
+
+  } catch (error) {
+    console.error("Update Booking Status Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update status",
+    });
+  }
+};
+
+const addCareNote = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const { note } = req.body;
+    const caregiverId = req.client.id || req.client._id
+
+    const updateCareNote = await BookingModal.findByIdAndUpdate({
+      _id: bookingId,
+      caregiverId: caregiverId,
+    }, {
+      careNotes: {
+        note,
+        addedBy: caregiverId,
+        role: "caregiver"
+      }
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Care note added",
+      data: updateCareNote,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to add care note",
+    });
+  }
+};
+
+module.exports = {
+  getMyBookings,
+  acceptBooking,
+  cancleBooking,
+  updateBookingStatus, addCareNote
+} 

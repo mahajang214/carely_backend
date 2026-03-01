@@ -3,28 +3,51 @@ const mongoose = require("mongoose");
 const patientModalSchema = new mongoose.Schema({
 
     address: {
-        fullAddress: String,
-        city: String,
-        state: String,
-        pincode: String,
+        fullAddress: { type: String, required: true },
+        city: { type: String, required: true },
+        state: { type: String, required: true },
+        pincode: { type: String, required: true },
         coordinates: {
-            lat: Number,
-            lng: Number
+            type: {
+                type: String,
+                enum: ["Point"],
+                default: "Point"
+            },
+            coordinates: {
+                type: [Number], // [longitude, latitude]
+                required: true
+            }
         }
+    },
+
+    role: {
+        type: String,
+        enum: ["patient"],
+        default: "patient"
     },
 
     gender: {
         type: String,
         enum: ['male', 'female', 'other'],
-        required: true
+        required: true,
+        default: 'male'
     },
 
     emergencyContact: {
         name: { type: String, required: true },
-        phone: {
+        phoneNo: {
             type: String,
             required: true,
-            match: /^[0-9]{10}$/
+            match: /^[0-9]{10}$/,
+        },
+        responsibleUserId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "UserModal",
+            required: true
+        },
+        relationship: {
+            type: String,
+            required: true
         }
     },
 
@@ -59,6 +82,16 @@ const patientModalSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    username: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true,
+        select: false
+    },
 
     email: {
         type: String,
@@ -71,6 +104,10 @@ const patientModalSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
+    age: {
+        type: Number,
+        min: 0
+    },
 
     profilePicture: {
         type: String,
@@ -80,6 +117,10 @@ const patientModalSchema = new mongoose.Schema({
     lastActiveAt: {
         type: Date,
         default: null
+    },
+    blocked: {
+        type: Boolean,
+        default: false
     }
 
 }, { timestamps: true });

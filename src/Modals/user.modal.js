@@ -6,16 +6,31 @@ const userModalSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        index: true 
+        index: true
     },
+    linkedPatients: [
+        {
+            patientId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "PatientModal"
+            },
+            relationship: String,
+            patientName: String
+        }
+    ]
+    ,
 
     lastName: {
         type: String,
         required: true,
         trim: true,
-        index: true 
+        index: true
     },
-
+    gender: {
+        type: String,
+        enum: ['male', 'female', 'other'],
+        required: true
+    },
     role: {
         type: String,
         enum: ["family", "user"],
@@ -23,27 +38,39 @@ const userModalSchema = new mongoose.Schema({
     },
 
     address: {
-        fullAddress: String,
-        city: String,
-        state: String,
-        pincode: String,
+        fullAddress: { type: String, required: true },
+        city: { type: String, required: true },
+        state: { type: String, required: true },
+        pincode: { type: String, required: true },
         coordinates: {
-            lat: Number,
-            lng: Number
+            type: {
+                type: String,
+                enum: ["Point"],
+                default: "Point"
+            },
+            coordinates: {
+                type: [Number], // [longitude, latitude]
+                required: true
+            }
         }
     },
+
 
     googleId: {
         type: String,
         required: true,
         unique: true,
         select: false,
-        index: true 
+        index: true
     },
 
     dateOfBirth: {
-        type: Date,
+        type: String,
         required: true
+    },
+    age: {
+        type: Number,
+        min: 0
     },
 
     email: {
@@ -52,7 +79,7 @@ const userModalSchema = new mongoose.Schema({
         unique: true,
         lowercase: true,
         trim: true,
-        index: true 
+        index: true
     },
 
     mobileNumber: {
@@ -70,9 +97,19 @@ const userModalSchema = new mongoose.Schema({
     lastActiveAt: {
         type: Date,
         default: null
+    },
+    blocked: {
+        type: Boolean,
+        default: false
+    },
+    isActive: {
+        type: Boolean,
+        default: true
     }
 
+
 }, { timestamps: true });
+userModalSchema.index({ "address.city": 1 })
 
 const UserModal = mongoose.model("UserModal", userModalSchema);
 module.exports = UserModal;

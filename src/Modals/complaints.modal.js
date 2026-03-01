@@ -22,8 +22,9 @@ const complaintSchema = new mongoose.Schema({
     toModel: {
         type: String,
         required: true,
-        enum: ['UserModal', 'PatientModal', 'CaregiverModal']
-    },
+        enum: ['UserModal', 'PatientModal', 'CaregiverModal', 'BookingModal']
+    }
+    ,
 
     complaint: {
         type: String,

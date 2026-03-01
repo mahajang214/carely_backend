@@ -1,3 +1,5 @@
 add ai to know what is your desease from frontend.
 create downloadable invoice button and fire api for data.
-use googlemaps or anything to fill accurate location for address
+
+
+create a api for caregiver which runs when caregiver accept booking request this api only update caregiverId

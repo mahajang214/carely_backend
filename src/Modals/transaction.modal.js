@@ -19,6 +19,11 @@ const transactionSchema = new mongoose.Schema({
         ref: "CaregiverModal",
         required: true
     },
+    patientId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "PatientModal",
+        required: true
+    },
 
     totalAmount: {
         type: Number,
@@ -37,12 +42,12 @@ const transactionSchema = new mongoose.Schema({
 
     commissionPercentage: {
         type: Number,
-        default: 5
+        default: 0
     },
 
     paymentMethod: {
         type: String,
-        enum: ["upi", "cash", "card"],
+        enum: ["UPI", "cash", "card"],
         default: "cash"
     },
 
@@ -68,7 +73,7 @@ const transactionSchema = new mongoose.Schema({
    ⭐ AUTO COMMISSION + EARNING CALCULATION
 ===================================================== */
 
-transactionSchema.pre("save", function (next) {
+transactionSchema.pre("save", function () {
 
     // Prevent recalculating on update
     if (this.isNew || this.isModified("totalAmount")) {
@@ -79,26 +84,25 @@ transactionSchema.pre("save", function (next) {
         this.caregiverEarning = this.totalAmount - commission;
     }
 
-    next();
 });
 
 /* =====================================================
    ⭐ AUTO INVOICE NUMBER GENERATION
 ===================================================== */
 
-transactionSchema.pre("save", function (next) {
+// transactionSchema.pre("save", function () {
 
-    if (!this.invoiceNumber) {
+//     if (!this.invoiceNumber) {
 
-        const timestamp = Date.now();
-        const random = Math.floor(1000 + Math.random() * 9000);
+//         const timestamp = Date.now();
+//         const random = Math.floor(1000 + Math.random() * 9000);
 
-        this.invoiceNumber = `INV-${timestamp}-${random}`;
-        this.invoiceGeneratedAt = new Date();
-    }
+//         this.invoiceNumber = `INV-${timestamp}-${random}`;
+//         this.invoiceGeneratedAt = new Date();
+//     }
 
-    next();
-});
+
+// });
 
 const TransactionModal = mongoose.model("TransactionModal", transactionSchema);
 

@@ -1,9 +1,26 @@
 const mongoose = require("mongoose");
 
 const caregiverSchema = new mongoose.Schema({
-
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, required: true, trim: true },
+    address: {
+        fullAddress: { type: String, required: true },
+        city: { type: String, required: true },
+        state: { type: String, required: true },
+        pincode: { type: String, required: true },
+        coordinates: {
+            type: {
+                type: String,
+                enum: ["Point"],
+                default: "Point"
+            },
+            coordinates: {
+                type: [Number], // [longitude, latitude]
+                // required: true
+            }
+        }
+    }
+    ,
 
     googleId: {
         type: String,
@@ -11,6 +28,20 @@ const caregiverSchema = new mongoose.Schema({
         unique: true,
         select: false
     },
+    role: {
+        type: String,
+        enum: ["caregiver"],
+        default: "caregiver"
+    },
+    availabilityAndLocation: {
+        type: [String],
+        default: []
+    },
+    skills: [{
+        name: String,
+        experienceYears: Number,
+        certified: Boolean
+    }],
 
     email: {
         type: String,
@@ -44,7 +75,11 @@ const caregiverSchema = new mongoose.Schema({
         select: false
     },
 
-    verificationDocuments: [String],
+    verificationDocuments: {
+        type: [{ name: String, url: String }],
+        default: [],
+        select: false
+    },
 
     verified: {
         type: Boolean,
@@ -52,7 +87,6 @@ const caregiverSchema = new mongoose.Schema({
     },
 
     verifiedAt: Date,
-
     readyForService: {
         type: Boolean,
         default: false
@@ -61,10 +95,22 @@ const caregiverSchema = new mongoose.Schema({
     profilePicture: {
         type: String,
         default: null
-    }
-
+    },
+    blocked: {
+        type: Boolean,
+        default: false
+    },
+    servicesOffered: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "ServiceModal" }
+    ],
+    // totalEarning: {
+    //     type: Number,
+    //     default: 0
+    // }
 }, { timestamps: true });
 
 
+caregiverSchema.index({ "address.coordinates": "2dsphere" });
+caregiverSchema.index({ "address.city": 1 });
 const CaregiverModal = mongoose.model("CaregiverModal", caregiverSchema);
 module.exports = CaregiverModal;
