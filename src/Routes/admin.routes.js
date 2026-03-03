@@ -68,8 +68,8 @@ const {
   getMonthlyRevenue,
   getPlatformRevenue,
   getMostActiveCities,
-  getLocationWithCaregiverAndUsers,
-  getCityOverview
+  getCityOverview,
+  combineAPI
 } = require("../Controller/admin/admin.analytics.controller.js")
 // Transactions
 const {
@@ -140,10 +140,10 @@ router.patch("/patients/:patientId/unblock", verifyClient, unblockPatient);
 // BOOKINGS
 // ===============================
 router.get("/bookings", verifyClient, getAllBookings);
-router.get(`/bookings/:id`, verifyClient, getBookingDetails)
 router.get("/bookings/pending", verifyClient, getAllPendingBookings);
 router.get("/bookings/completed", verifyClient, getAllCompletedBookings);
 router.get("/bookings/rejected", verifyClient, getAllRejectedBookings);
+router.get(`/bookings/:id`, verifyClient, getBookingDetails)
 
 
 // ===============================
@@ -165,6 +165,7 @@ router.get("/analytics/monthly-revenue", verifyClient, getMonthlyRevenue);
 router.get("/analytics/most-active-cities", verifyClient, getMostActiveCities);
 router.get("/analytics/location-overview", verifyClient, getCityOverview);
 router.get("/analytics/platform-revenue", verifyClient, getPlatformRevenue)
+router.get("/analytics/combine-api", verifyClient, combineAPI)
 
 
 // ===============================

@@ -23,7 +23,8 @@ const { getMyProfile, updateMyProfile, deleteMyAccount } = require("../Controlle
 const { getMyLinkedPatients, deletePatient } = require("../Controller/user/user.patients.controller")
 // Reviews
 const { addReview, updateReview,
-    deleteReview, getReviewsByCategory } = require("../Controller/user/user.review.controller");
+    deleteReview, getReviewsByCategory, 
+    getReviews} = require("../Controller/user/user.review.controller");
 // Complaints 
 const { fileComplaintByUser, getMyComplaints } = require("../Controller/user/user.complaints.controller")
 // Notifications
@@ -77,7 +78,8 @@ router.delete("/patients/:id", verifyclient, deletePatient);
 router.post("/reviews", verifyclient, addReview);
 router.patch("/reviews/:id", verifyclient, updateReview);
 router.delete("/reviews/:id", verifyclient, deleteReview);
-router.get("/reviews/filter", verifyclient, getReviewsByCategory);
+router.get("/reviews/filter", verifyclient, getReviews);
+// router.get("/reviews/check")
 
 
 // =======================

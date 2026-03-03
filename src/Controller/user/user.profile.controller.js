@@ -10,7 +10,7 @@ const getMyProfile = async (req, res) => {
             .populate({
                 path: "linkedPatients.patientId",
                 select: "-__v"
-            });
+            }).lean()
 
         if (!userInfo) {
             return sendResponse(res, 400, "Something went wrong", null);

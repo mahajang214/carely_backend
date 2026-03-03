@@ -126,9 +126,80 @@ const getCityOverview = async (req, res) => {
         return sendResponse(res, 500, "Failed to retrieve city overview", null);
     }
 };
+
+const combineAPI = async (req, res) => {
+    try {
+        const currentYearStart = new Date(new Date().getFullYear(), 0, 1);
+
+        const [
+            monthlyRevenue,
+            platformRevenue,
+            mostActiveCities,
+            cityOverview
+        ] = await Promise.all([
+
+            BookingModal.aggregate([
+                {
+                    $match: {
+                        serviceStatus: "completed",
+                        createdAt: { $gte: currentYearStart }
+                    }
+                },
+                {
+                    $group: {
+                        _id: { month: { $month: "$createdAt" } },
+                        totalRevenue: { $sum: "$grandTotal" }
+                    }
+                },
+                { $sort: { "_id.month": 1 } }
+            ]),
+
+            TransactionModal.aggregate([
+                { $match: { paymentStatus: "confirmed" } },
+                {
+                    $group: {
+                        _id: null,
+                        totalRevenue: { $sum: "$platformCommission" },
+                        totalTransactions: { $sum: 1 },
+                        grossAmount: { $sum: "$totalAmount" }
+                    }
+                }
+            ]),
+
+            UserModal.aggregate([
+                { $group: { _id: "$address.city", userCount: { $sum: 1 } } },
+                { $sort: { userCount: -1 } },
+                { $limit: 5 }
+            ]),
+
+            CaregiverModal.aggregate([
+                { $group: { _id: "$address.city", caregiverCount: { $sum: 1 } } },
+                { $sort: { caregiverCount: -1 } }
+            ])
+
+        ]);
+
+        return sendResponse(res, 200, "Dashboard data fetched successfully", {
+            monthlyRevenue,
+            platformRevenue: platformRevenue[0] || {
+                totalRevenue: 0,
+                totalTransactions: 0,
+                grossAmount: 0
+            },
+            mostActiveCities,
+            cityOverview
+        });
+
+    } catch (error) {
+        console.error("combineAPI error:", error);
+        return sendResponse(res, 500, "Failed to fetch dashboard data", null);
+    }
+};
+
 module.exports = {
     getMonthlyRevenue,
     getPlatformRevenue,
     getMostActiveCities,
-    getCityOverview
+    getCityOverview,
+    combineAPI
 };
