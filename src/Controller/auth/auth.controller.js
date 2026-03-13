@@ -276,7 +276,7 @@ const register = async (req, res) => {
                 !mobileNumber || !gender || !qualifications ||
                 !verificationDocuments || !readyForService ||
                 !availabilityAndLocation) {
-                console.log("Error Fields : ", fullAddress, city, state, pincode, coords, mobileNumber, gender, qualifications, verificationDocuments, readyForService, availabilityAndLocation)
+                // console.log("Error Fields : ", fullAddress, city, state, pincode, coords, mobileNumber, gender, qualifications, verificationDocuments, readyForService, availabilityAndLocation)
                 return res.status(400).json({ message: "Missing required fields" });
             }
 

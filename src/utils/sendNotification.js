@@ -33,7 +33,7 @@ const sendNotification = async ({ from, to, message, title, type, priority }) =>
 
 
         // Simulate sending notification (e.g., via email or SMS)
-        console.log(`Notification sent from ${from} to ${to}: ${message}`);
+        // console.log(`Notification sent from ${from} to ${to}: ${message}`);
         return { success: true, message: 'Notification sent successfully' };
     } catch (error) {
         console.error('Error sending notification:', error);

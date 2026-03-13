@@ -13,7 +13,7 @@ const getAllCaregivers = async (req, res) => {
 const blockCaregiver = async (req, res) => {
     try {
         const { caregiverId } = req.params;
-        console.log("Caregiver ID: ", caregiverId)
+        // console.log("Caregiver ID: ", caregiverId)
         if (!caregiverId) {
             return sendResponse(res, 400, "caregiverId is required", null);
         }
