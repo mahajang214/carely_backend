@@ -72,9 +72,10 @@ const acceptBooking = async (req, res) => {
     const startDate = new Date(booking.schedule.startDate).toDateString();
     const name = booking?.userId?.firstName || "User";
 
-    await sendMail({
+    const mailResult = await sendMail({
       to: userEmail,
       subject: "Carely – Caregiver Accepted Your Booking",
+
       text: `
 =================================
         BOOKING ACCEPTED
@@ -95,18 +96,67 @@ Time Slot  : ${booking.schedule.timeSlot}
 
 The caregiver will arrive according to the scheduled time.
 
-Thank you for choosing Carely ❤️
+Thank you for choosing Carely.
 
 ---------------------------------
 Carely Team
 `,
+
+      html: `
+<div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:20px;">
+  <div style="max-width:520px; margin:auto; background:#ffffff; padding:30px; border-radius:8px;">
+
+    <h2 style="color:#2c3e50; margin-bottom:20px;">
+      Booking Accepted
+    </h2>
+
+    <p>Hello <strong>${name}</strong>,</p>
+
+    <p>
+      Good news! Your booking has been <strong>accepted by the caregiver</strong>.
+    </p>
+
+    <p>
+      <strong>Service Category:</strong> ${booking.bookingServiceCategory}
+    </p>
+
+    <div style="
+      background:#f9fafb;
+      padding:15px;
+      border-radius:6px;
+      margin:20px 0;
+      border:1px solid #eee;
+    ">
+      <p style="margin:6px 0;"><strong>Start Date:</strong> ${startDate}</p>
+      <p style="margin:6px 0;"><strong>Time Slot:</strong> ${booking.schedule.timeSlot}</p>
+    </div>
+
+    <p style="color:#555;">
+      The caregiver will arrive according to the scheduled time.
+    </p>
+
+    <p style="margin-top:20px;">
+      Thank you for choosing <strong>Carely</strong>.
+    </p>
+
+    <hr style="margin:25px 0; border:none; border-top:1px solid #eee;" />
+
+    <p style="font-size:13px; color:#777;">
+      – Carely Team
+    </p>
+
+  </div>
+</div>
+`,
     });
 
-    return res.status(200).json({
-      success: true,
-      message: "Booking accepted and email sent",
-      data: booking,
-    });
+    if (mailResult.success) {
+      return res.status(200).json({
+        success: true,
+        message: "Booking accepted and email sent",
+        data: booking,
+      });
+    }
   } catch (error) {
     console.error("Accept Booking Error:", error);
 

@@ -7,18 +7,17 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 /* SEND MAIL FUNCTION */
 
-const sendMail = async ({ to, subject, text }) => {
-  // console.log("Sending mail to:", to);
-
+const sendMail = async ({ to, subject, text, html }) => {
   try {
     const response = await resend.emails.send({
       from: process.env.MAIL_FROM,
       to,
       subject,
       text,
+      html, // optional but useful
     });
 
-    // console.log("Email sent successfully");
+    console.log("Email sent successfully:");
 
     return {
       success: true,
