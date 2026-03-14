@@ -8,7 +8,7 @@ const userRoutes = require("../Routes/user.routes")
 const adminRoutes = require("../Routes/admin.routes")
 const caregiverRoutes = require("../Routes/caregiver.routes")
 const commonRoutes = require("../Routes/common.route");
-const sendMail = require("../utils/sendMail");
+// const sendMail = require("../utils/sendMail");
 
 // setup express app
 const app = express()
@@ -48,10 +48,10 @@ app.use("/api/user", userRoutes)
 app.use("/api/admin", adminRoutes)
 app.use("/api/caregiver", caregiverRoutes)
 app.use("/api/common", commonRoutes)
-app.get("/test-mail", async (req, res) => {
-    await sendMail({ to: process.env.MAIL_FROM, subject: "TESTING", text: "TESTING" })
-    return res.status(200)
-})
+// app.get("/test-mail", async (req, res) => {
+//     await sendMail({ to: process.env.MAIL_FROM, subject: "TESTING", text: "TESTING" })
+//     return res.status(200)
+// })
 
 
 // export app

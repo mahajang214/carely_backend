@@ -75,56 +75,31 @@ const acceptBooking = async (req, res) => {
     await sendMail({
       to: userEmail,
       subject: "Carely – Caregiver Accepted Your Booking",
-
       text: `
+=================================
+        BOOKING ACCEPTED
+=================================
+
 Hello ${name},
 
-Your booking for ${booking.bookingServiceCategory} has been accepted by the caregiver.
+Good news! Your booking has been accepted by the caregiver.
 
-Start Date: ${startDate}
-Time Slot: ${booking.schedule.timeSlot}
+Service Category : ${booking.bookingServiceCategory}
+
+---------------------------------
+Booking Schedule
+---------------------------------
+
+Start Date : ${startDate}
+Time Slot  : ${booking.schedule.timeSlot}
+
+The caregiver will arrive according to the scheduled time.
 
 Thank you for choosing Carely ❤️
+
+---------------------------------
+Carely Team
 `,
-
-      html: `
-<div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:20px;">
-  <div style="max-width:500px; margin:auto; background:#ffffff; padding:30px; border-radius:8px;">
-
-    <h2 style="color:#2c3e50; margin-bottom:20px;">
-      Booking Accepted ✅
-    </h2>
-
-    <p style="font-size:15px; color:#555;">
-      Hello <strong>${name}</strong>,
-    </p>
-
-    <p style="font-size:15px; color:#555;">
-      Your booking for <strong>${booking.bookingServiceCategory}</strong> has been accepted by the caregiver.
-    </p>
-
-    <div style="
-      background:#f9fafb;
-      padding:15px;
-      border-radius:6px;
-      margin:20px 0;
-      border:1px solid #eee;
-    ">
-      <p style="margin:5px 0;"><strong>Start Date:</strong> ${startDate}</p>
-      <p style="margin:5px 0;"><strong>Time Slot:</strong> ${booking.schedule.timeSlot}</p>
-    </div>
-
-    <p style="font-size:14px; color:#777;">
-      The caregiver will arrive according to the scheduled time.
-    </p>
-
-    <p style="margin-top:20px; font-size:14px;">
-      Thank you for choosing <strong>Carely</strong> ❤️
-    </p>
-
-  </div>
-</div>
-`
     });
 
     return res.status(200).json({
