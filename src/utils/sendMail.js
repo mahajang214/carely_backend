@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
   port: Number(process.env.MAIL_PORT) || 587,
   secure: false, // true only for port 465
   family: 4, // also force IPv4
-  connectionTimeout: 10000,
+  connectionTimeout: 100000,
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
@@ -30,7 +30,7 @@ const transporter = nodemailer.createTransport({
 
 transporter.verify(function (error, success) {
   if (error) {
-    console.log("SMTP ERROR:", error.message);
+    console.log("SMTP ERROR:", error);
   } else {
     console.log("SMTP Server is ready");
   }
