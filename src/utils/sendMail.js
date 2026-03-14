@@ -2,22 +2,32 @@ const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
   host: process.env.MAIL_HOST,
-  port: process.env.MAIL_PORT,
+  port: Number(process.env.MAIL_PORT),
   secure: false, // true only for port 465
+  connectionTimeout: 10000,
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
   },
 });
 
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log("SMTP ERROR:", error.message);
+  } else {
+    console.log("SMTP Server is ready");
+  }
+});
 
-const sendMail = async ({ to, subject, text }) => {
+
+const sendMail = async ({ to, subject, text, html }) => {
   try {
     const info = await transporter.sendMail({
       from: process.env.MAIL_FROM,
       to,
       subject,
       text,
+      html
     });
 
     return {

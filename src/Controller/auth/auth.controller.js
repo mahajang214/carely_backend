@@ -520,57 +520,57 @@ If you did not request this, please ignore this email.
 `,
 
                 html: `
-  <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px;">
-    <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 30px; border-radius: 8px;">
-      
-      <h2 style="color: #2c3e50; margin-bottom: 20px;">
-        Password Reset Request
-      </h2>
+<div style="font-family: Arial, sans-serif; background-color:#f4f6f8; padding:20px;">
+  <div style="max-width:500px; margin:auto; background:#ffffff; padding:30px; border-radius:8px;">
+    
+    <h2 style="color:#2c3e50; margin-bottom:20px;">
+      Password Reset Request
+    </h2>
 
-      <p style="font-size: 15px; color: #555;">
-        Hello <strong>${name}</strong>,
-      </p>
+    <p style="font-size:15px; color:#555;">
+      Hello <strong>${responsibleUser.firstName} ${responsibleUser.lastName}</strong>,
+    </p>
 
-      <p style="font-size: 15px; color: #555;">
-        We received a request to reset password for Account ${name}.
-      </p>
+    <p style="font-size:15px; color:#555;">
+      We received a request to reset your password for your Carely account.
+    </p>
 
-      <div style="margin: 25px 0; text-align: center;">
-        <span style="
-          display: inline-block;
-          background-color: #4f46e5;
-          color: #ffffff;
-          font-size: 22px;
-          letter-spacing: 4px;
-          padding: 12px 24px;
-          border-radius: 6px;
-          font-weight: bold;
-        ">
-          ${otp}
-        </span>
-      </div>
-
-      <p style="font-size: 14px; color: #777;">
-        This OTP will expire in <strong>10 minutes</strong>.
-      </p>
-
-      <p style="font-size: 14px; color: #777;">
-        Do not share this code with anyone.
-      </p>
-
-      <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;" />
-
-      <p style="font-size: 12px; color: #999;">
-        If you did not request a password reset, you can safely ignore this email.
-      </p>
-
-      <p style="font-size: 13px; color: #555; margin-top: 20px;">
-        – Carely Team
-      </p>
-
+    <div style="margin:25px 0; text-align:center;">
+      <span style="
+        display:inline-block;
+        background-color:#4f46e5;
+        color:#ffffff;
+        font-size:22px;
+        letter-spacing:4px;
+        padding:12px 24px;
+        border-radius:6px;
+        font-weight:bold;
+      ">
+        ${otp}
+      </span>
     </div>
+
+    <p style="font-size:14px; color:#777;">
+      This OTP will expire in <strong>10 minutes</strong>.
+    </p>
+
+    <p style="font-size:14px; color:#777;">
+      Do not share this code with anyone.
+    </p>
+
+    <hr style="margin:30px 0; border:none; border-top:1px solid #eee;" />
+
+    <p style="font-size:12px; color:#999;">
+      If you did not request a password reset, you can safely ignore this email.
+    </p>
+
+    <p style="font-size:13px; color:#555; margin-top:20px;">
+      – Carely Team
+    </p>
+
   </div>
-  `
+</div>
+`
             });
 
 
@@ -620,7 +620,26 @@ This OTP will expire in 10 minutes.
 Do not share it with anyone.
 
 – Carely Team
-`
+`,
+            html: `
+    <div style="font-family: Arial, sans-serif; line-height:1.5">
+      <h2>Carely Patient Verification</h2>
+
+      <p><strong>Patient Name:</strong> ${name}</p>
+      <p><strong>Relationship:</strong> ${relationship}</p>
+
+      <p>Your OTP is:</p>
+
+      <h1 style="letter-spacing:4px;">${otp}</h1>
+
+      <p>This OTP will expire in <strong>10 minutes</strong>.</p>
+
+      <p style="color:#666;">Do not share it with anyone.</p>
+
+      <br/>
+      <p>– Carely Team</p>
+    </div>
+  `,
         });
 
         return sendResponse(
