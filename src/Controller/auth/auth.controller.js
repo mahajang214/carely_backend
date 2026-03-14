@@ -587,7 +587,7 @@ If you did not request this, please ignore this email.
         if (!name || !relationship) {
             return sendResponse(res, 400, "Name and relationship are required");
         }
-        const responsibleUser = await UserModal.findById(userId).select("email");
+        const responsibleUser = await UserModal.findById(userId).select("+email");
         if (!responsibleUser) {
             return sendResponse(res, 404, "Responsible user not found");
         }
