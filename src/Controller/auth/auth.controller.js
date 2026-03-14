@@ -591,7 +591,7 @@ If you did not request this, please ignore this email.
         if (!responsibleUser) {
             return sendResponse(res, 404, "Responsible user not found");
         }
-        console.log("RESPONSIBLE EMAIL : ", responsibleUser.email)
+        // console.log("RESPONSIBLE EMAIL : ", responsibleUser.email)
 
         const otp = generateOTP();
         const otpHash = hashOTP(otp);
