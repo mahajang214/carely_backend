@@ -9,7 +9,7 @@ const nodemailer = require("nodemailer");
 // console.log("MAIL_PORT:", process.env.MAIL_PORT);
 
 const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST || "smtp.gmail.com",
+  host: process.env.MAIL_HOST,
   port: 465,
   secure: true,
   family: 4, // also force IPv4
