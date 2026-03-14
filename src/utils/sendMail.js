@@ -13,7 +13,9 @@ const transporter = nodemailer.createTransport({
   port: Number(process.env.MAIL_PORT) || 587,
   secure: false, // true only for port 465
   family: 4, // also force IPv4
-  connectionTimeout: 100000,
+  connectionTimeout: 20000,
+  greetingTimeout: 15000,
+  socketTimeout: 20000,
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
