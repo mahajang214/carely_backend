@@ -8,25 +8,25 @@ const nodemailer = require("nodemailer");
 // console.log("MAIL_HOST:", process.env.MAIL_HOST);
 // console.log("MAIL_PORT:", process.env.MAIL_PORT);
 
-// const transporter = nodemailer.createTransport({
-//   host: process.env.MAIL_HOST,
-//   port: Number(process.env.MAIL_PORT),
-//   secure: false, // true only for port 465
-//   family: 4, // also force IPv4
-//   connectionTimeout: 10000,
-//   auth: {
-//     user: process.env.MAIL_USER,
-//     pass: process.env.MAIL_PASS,
-//   },
-// });
-
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.MAIL_HOST,
+  port: Number(process.env.MAIL_PORT),
+  secure: false, // true only for port 465
+  family: 4, // also force IPv4
+  connectionTimeout: 10000,
   auth: {
     user: process.env.MAIL_USER,
-    pass: process.env.MAIL_PASS
-  }
+    pass: process.env.MAIL_PASS,
+  },
 });
+
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.MAIL_USER,
+//     pass: process.env.MAIL_PASS
+//   }
+// });
 
 transporter.verify(function (error, success) {
   if (error) {
