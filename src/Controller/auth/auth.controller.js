@@ -483,7 +483,7 @@ const sendOTP = async (req, res) => {
             }
             // console.log("getEmergencyContactEmail: ", getEmergencyContactEmail)
 
-            const responsibleUser = await UserModal.findOne({ _id: getEmergencyContactEmail.emergencyContact.responsibleUserId }).select("email firstName lastName");
+            const responsibleUser = await UserModal.findOne({ _id: getEmergencyContactEmail.emergencyContact.responsibleUserId }).select("+email firstName lastName");
             if (!responsibleUser) {
                 // console.log("Responsible user not found for ID:", id);
                 return sendResponse(res, 404, "Responsible user not found", null);
@@ -577,7 +577,7 @@ If you did not request this, please ignore this email.
             return sendResponse(
                 res,
                 200,
-                "OTP sent successfully"
+                "FORGOT OTP sent successfully"
             );
         }
         // console.log("BODY: ", req.body);
@@ -591,6 +591,7 @@ If you did not request this, please ignore this email.
         if (!responsibleUser) {
             return sendResponse(res, 404, "Responsible user not found");
         }
+        console.log("RESPONSIBLE EMAIL : ", responsibleUser.email)
 
         const otp = generateOTP();
         const otpHash = hashOTP(otp);
