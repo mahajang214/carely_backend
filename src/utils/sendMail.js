@@ -17,8 +17,7 @@ const sendMail = async ({ to, subject, text, html }) => {
       html, // optional but useful
     });
 
-    console.log("Email sent successfully:");
-
+    console.log("Email sent successfully:", response)
     return {
       success: true,
       messageId: response.data?.id,
