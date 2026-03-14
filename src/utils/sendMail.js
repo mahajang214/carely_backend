@@ -9,8 +9,8 @@ const nodemailer = require("nodemailer");
 // console.log("MAIL_PORT:", process.env.MAIL_PORT);
 
 const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
-  port: Number(process.env.MAIL_PORT),
+  host: process.env.MAIL_HOST || "smtp.gmail.com",
+  port: Number(process.env.MAIL_PORT) || 587,
   secure: false, // true only for port 465
   family: 4, // also force IPv4
   connectionTimeout: 10000,
