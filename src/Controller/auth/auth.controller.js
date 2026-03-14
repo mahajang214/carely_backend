@@ -610,37 +610,28 @@ If you did not request this, please ignore this email.
             to: responsibleUser.email,
             subject: "Carely – Patient Verification OTP",
             text: `
+==============================
+      CARELY VERIFICATION
+==============================
+
 Hello,
 
-Patient Name: ${name}
-Relationship: ${relationship}
+Patient Name : ${name}
+Relationship : ${relationship}
 
-Your OTP is: ${otp}
+--------------------------------
+Your OTP Code
+--------------------------------
+
+        ${otp}
 
 This OTP will expire in 10 minutes.
-Do not share it with anyone.
 
-– Carely Team
+⚠ Do not share this OTP with anyone.
+
+--------------------------------
+Carely Team
 `,
-            html: `
-    <div style="font-family: Arial, sans-serif; line-height:1.5">
-      <h2>Carely Patient Verification</h2>
-
-      <p><strong>Patient Name:</strong> ${name}</p>
-      <p><strong>Relationship:</strong> ${relationship}</p>
-
-      <p>Your OTP is:</p>
-
-      <h1 style="letter-spacing:4px;">${otp}</h1>
-
-      <p>This OTP will expire in <strong>10 minutes</strong>.</p>
-
-      <p style="color:#666;">Do not share it with anyone.</p>
-
-      <br/>
-      <p>– Carely Team</p>
-    </div>
-  `,
         });
 
         return sendResponse(

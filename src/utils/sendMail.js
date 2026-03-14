@@ -36,14 +36,13 @@ transporter.verify(function (error, success) {
   }
 });
 
-const sendMail = async ({ to, subject, text, html }) => {
+const sendMail = async ({ to, subject, text }) => {
   try {
     const info = await transporter.sendMail({
       from: process.env.MAIL_FROM,
       to,
       subject,
       text,
-      html,
     });
 
     return {
