@@ -43,7 +43,7 @@ const unblockCaregiver = async (req, res) => {
 
 const getAllBlockedCaregivers = async (req, res) => {
     try {
-        const blockedCaregivers = await CaregiverModal.find({ blocked: true });
+        const blockedCaregivers = await CaregiverModal.find({ blocked: true }).select("+verificationDocuments +mobileNumber")
         return sendResponse(res, 200, "Blocked caregivers retrieved successfully", blockedCaregivers);
     } catch (error) {
         return sendResponse(res, 500, "Failed to retrieve blocked caregivers", null);
@@ -53,7 +53,7 @@ const getAllBlockedCaregivers = async (req, res) => {
 
 const getAllVerifiedCaregivers = async (req, res) => {
     try {
-        const verifiedCaregivers = await CaregiverModal.find({ verified: true });
+        const verifiedCaregivers = await CaregiverModal.find({ verified: true }).select("+verificationDocuments +mobileNumber")
         return sendResponse(res, 200, "Verified caregivers retrieved successfully", verifiedCaregivers);
     } catch (error) {
         return sendResponse(res, 500, "Failed to retrieve verified caregivers", null);
@@ -62,7 +62,7 @@ const getAllVerifiedCaregivers = async (req, res) => {
 
 const getAllUnverifiedCaregivers = async (req, res) => {
     try {
-        const unverifiedCaregivers = await CaregiverModal.find({ verified: false });
+        const unverifiedCaregivers = await CaregiverModal.find({ verified: false }).select("+verificationDocuments +mobileNumber")
         return sendResponse(res, 200, "Unverified caregivers retrieved successfully", unverifiedCaregivers);
     } catch (error) {
         return sendResponse(res, 500, "Failed to retrieve unverified caregivers", null);

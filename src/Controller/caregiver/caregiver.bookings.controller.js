@@ -48,7 +48,7 @@ const acceptBooking = async (req, res) => {
         caregiverId: req.client.id || req.client._id,
         bookingStatus: "accepted",
       },
-      { new: true }
+      { returnDocument: "after" }
     ).populate("userId", "email firstName lastName"); // 👈 populate here
 
     if (!booking) {
@@ -105,7 +105,7 @@ const cancleBooking = async (req, res) => {
     const booking = await BookingModal.findOneAndUpdate(
       { _id: bookingId, caregiverId: req.client.id },
       { status: "rejected" },
-      { new: true }
+       { returnDocument: "after" }
     );
 
     if (!booking) {
@@ -148,7 +148,7 @@ const updateBookingStatus = async (req, res) => {
     const booking = await BookingModal.findOneAndUpdate(
       { _id: bookingId, caregiverId: caregiverId },
       { bookingStatus: status },
-      { new: true }
+     { returnDocument: "after" }
     );
 
     if (!booking) {

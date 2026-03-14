@@ -95,7 +95,7 @@ const updateReview = async (req, res) => {
         const updatedReview = await ReviewModal.findOneAndUpdate(
             { _id: reviewId, userId },
             { rating, review },
-            { new: true, runValidators: true }
+            { runValidators: true, returnDocument: "after" }
         );
 
         if (!updatedReview) {

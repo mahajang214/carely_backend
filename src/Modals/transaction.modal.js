@@ -62,7 +62,8 @@ const transactionSchema = new mongoose.Schema({
     // ⭐ Invoice Support
     invoiceNumber: {
         type: String,
-        unique: true
+        unique: true,
+        sparse: true
     },
 
     invoiceGeneratedAt: Date
@@ -90,19 +91,19 @@ transactionSchema.pre("save", function () {
    ⭐ AUTO INVOICE NUMBER GENERATION
 ===================================================== */
 
-// transactionSchema.pre("save", function () {
+transactionSchema.pre("save", function () {
 
-//     if (!this.invoiceNumber) {
+    if (!this.invoiceNumber) {
 
-//         const timestamp = Date.now();
-//         const random = Math.floor(1000 + Math.random() * 9000);
+        const timestamp = Date.now();
+        const random = Math.floor(1000 + Math.random() * 9000);
 
-//         this.invoiceNumber = `INV-${timestamp}-${random}`;
-//         this.invoiceGeneratedAt = new Date();
-//     }
+        this.invoiceNumber = `INV-${timestamp}-${random}`;
+        this.invoiceGeneratedAt = new Date();
+    }
 
 
-// });
+});
 
 const TransactionModal = mongoose.model("TransactionModal", transactionSchema);
 
