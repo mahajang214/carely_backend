@@ -1,18 +1,19 @@
 const dotEnv = require("dotenv");
 dotEnv.config();
+
 const dns = require("dns");
-dns.setDefaultResultOrder("ipv4first"); // force Node to prefer IPv4
+dns.setDefaultResultOrder("ipv4first");
 
 const nodemailer = require("nodemailer");
 
-// console.log("MAIL_HOST:", process.env.MAIL_HOST);
-// console.log("MAIL_PORT:", process.env.MAIL_PORT);
 
-const transporter = nodemailer.createTransport({
-  host: process.env.MAIL_HOST,
+
+/* TRANSPORTERS */
+
+const transporter1 = nodemailer.createTransport({
+  host: "smtp.gmail.com",
   port: 465,
   secure: true,
-  family: 4, // also force IPv4
   connectionTimeout: 20000,
   greetingTimeout: 15000,
   socketTimeout: 20000,
@@ -22,42 +23,69 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// const transporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: process.env.MAIL_USER,
-//     pass: process.env.MAIL_PASS
-//   }
-// });
-
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log("SMTP ERROR:", error);
-  } else {
-    console.log("SMTP Server is ready");
-  }
+const transporter2 = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  requireTLS: true,
+  connectionTimeout: 20000,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
 });
 
-const sendMail = async ({ to, subject, text }) => {
-  try {
-    const info = await transporter.sendMail({
-      from: process.env.MAIL_FROM,
-      to,
-      subject,
-      text,
-    });
+const transporter3 = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
+});
 
-    return {
-      success: true,
-      messageId: info.messageId,
-    };
-  } catch (error) {
-    console.error("Mail error:", error);
-    return {
-      success: false,
-      error: error.message,
-    };
+/* ARRAY OF TRANSPORTERS */
+
+const transporters = [
+  { name: "SMTP 465 SSL", transporter: transporter1 },
+  { name: "SMTP 587 TLS", transporter: transporter2 },
+  { name: "GMAIL SERVICE", transporter: transporter3 },
+];
+
+
+
+/* SEND MAIL FUNCTION */
+
+const sendMail = async ({ to, subject, text }) => {
+
+  for (const t of transporters) {
+    try {
+      console.log(`Trying transporter: ${t.name}`);
+
+      const info = await t.transporter.sendMail({
+        from: process.env.MAIL_FROM,
+        to,
+        subject,
+        text,
+      });
+
+      console.log(`SUCCESS with ${t.name}`);
+
+      return {
+        success: true,
+        transporter: t.name,
+        messageId: info.messageId,
+      };
+
+    } catch (error) {
+      console.log(`FAILED with ${t.name}`);
+      console.log(error.message);
+    }
   }
+
+  return {
+    success: false,
+    error: "All SMTP transporters failed",
+  };
 };
 
 module.exports = sendMail;
