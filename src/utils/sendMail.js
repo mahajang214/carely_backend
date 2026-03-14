@@ -11,12 +11,9 @@ const nodemailer = require("nodemailer");
 /* TRANSPORTERS */
 
 const transporter1 = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "74.125.69.109", // Gmail IPv4
   port: 465,
   secure: true,
-  connectionTimeout: 20000,
-  greetingTimeout: 15000,
-  socketTimeout: 20000,
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
@@ -25,10 +22,15 @@ const transporter1 = nodemailer.createTransport({
 
 const transporter2 = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  connectionTimeout: 20000,
+  port: 465,
+  secure: true,
+  connectionTimeout: 30000,
+  greetingTimeout: 30000,
+  socketTimeout: 30000,
+  tls: {
+    rejectUnauthorized: false,
+    family: 4
+  },
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
@@ -36,7 +38,13 @@ const transporter2 = nodemailer.createTransport({
 });
 
 const transporter3 = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  requireTLS: true,
+  connectionTimeout: 30000,
+  greetingTimeout: 30000,
+  socketTimeout: 30000,
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
@@ -44,11 +52,10 @@ const transporter3 = nodemailer.createTransport({
 });
 
 /* ARRAY OF TRANSPORTERS */
-
 const transporters = [
-  { name: "SMTP 465 SSL", transporter: transporter1 },
-  { name: "SMTP 587 TLS", transporter: transporter2 },
-  { name: "GMAIL SERVICE", transporter: transporter3 },
+  { name: "Gmail IPv4 Direct", transporter: transporter1 },
+  { name: "SMTP 465 Gmail TLS", transporter: transporter2 },
+  { name: "SMTP 587 TLS", transporter: transporter3 },
 ];
 
 
@@ -56,7 +63,7 @@ const transporters = [
 /* SEND MAIL FUNCTION */
 
 const sendMail = async ({ to, subject, text }) => {
-
+  console.log("Sending mail to:", to);
   for (const t of transporters) {
     try {
       console.log(`Trying transporter: ${t.name}`);
