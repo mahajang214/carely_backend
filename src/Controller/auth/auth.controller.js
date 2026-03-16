@@ -484,7 +484,7 @@ const sendOTP = async (req, res) => {
             }
             // console.log("getEmergencyContactEmail: ", getEmergencyContactEmail)
 
-            const responsibleUser = await UserModal.findOne({ _id: getEmergencyContactEmail.emergencyContact.responsibleUserId }).select("+email firstName lastName");
+            const responsibleUser = await UserModal.findOne({ _id: getEmergencyContactEmail.emergencyContact.responsibleUserId }).select("+email firstName lastName _id");
             if (!responsibleUser) {
                 // console.log("Responsible user not found for ID:", id);
                 return sendResponse(res, 404, "Responsible user not found", null);
