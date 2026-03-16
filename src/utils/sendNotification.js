@@ -10,7 +10,8 @@ const NOTIFICATION_TYPES = {
     RELATIONSHIP_REQUEST: "relationship_request",
     RELATIONSHIP_RESPONSE: "relationship_response",
     GENERAL: "general",
-    EVENT_NOTIFICATION: "event_notification"
+    EVENT_NOTIFICATION: "event_notification",
+    PASSWORD_RESET:"password_reset"
 };
 
 const sendNotification = async ({ from, to, message, title, type, priority }) => {

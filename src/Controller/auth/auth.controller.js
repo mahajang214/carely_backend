@@ -18,6 +18,7 @@ const PatientModal = require('../../Modals/patient.modal.js');
 // google token verification helper
 const verifyGoogleToken = require('../../utils/verifyGoogleToken.js');
 const { encryptHash, compareHash } = require('../../utils/cryptography.js');
+const sendNotification = require('../../utils/sendNotification.js');
 // config
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -501,88 +502,100 @@ const sendOTP = async (req, res) => {
                 expiresAt: new Date(Date.now() + 10 * 60 * 1000) // 10 min
             });
 
-            const mailResult = await sendMail({
-                to: responsibleUser.email,
-                subject: "Carely – Password Reset OTP",
+            const message = `Password Reset OTP: ${otp}. 
+Use this code to reset your Carely account password. 
+This OTP will expire in 10 minutes. Do not share it with anyone.`;
 
-                text: `
-=================================
-        CARELY PASSWORD RESET
-=================================
-
-Hello ${responsibleUser.firstName} ${responsibleUser.lastName},
-
-We received a request to reset your Carely account password.
-
----------------------------------
-Your One-Time Password (OTP)
----------------------------------
-
-        ${otp}
-
-This OTP will expire in 10 minutes.
-
-Do not share this code with anyone.
-
-If you did not request a password reset, you can safely ignore this email.
-
----------------------------------
-Carely Team
-`,
-
-                html: `
-<div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:20px;">
-  <div style="max-width:500px; margin:auto; background:#ffffff; padding:30px; border-radius:8px;">
-
-    <h2 style="color:#2c3e50; margin-bottom:20px;">
-      Password Reset Request
-    </h2>
-
-    <p>Hello <strong>${responsibleUser.firstName} ${responsibleUser.lastName}</strong>,</p>
-
-    <p>We received a request to reset your <strong>Carely</strong> account password.</p>
-
-    <p>Your One-Time Password (OTP) is:</p>
-
-    <div style="text-align:center; margin:25px 0;">
-      <span style="
-        display:inline-block;
-        background:#4f46e5;
-        color:#ffffff;
-        font-size:26px;
-        letter-spacing:6px;
-        padding:12px 26px;
-        border-radius:6px;
-        font-weight:bold;
-      ">
-        ${otp}
-      </span>
-    </div>
-
-    <p>This OTP will expire in <strong>10 minutes</strong>.</p>
-
-    <p style="color:#666;">Do not share this code with anyone.</p>
-
-    <hr style="margin:25px 0; border:none; border-top:1px solid #eee;" />
-
-    <p style="font-size:13px; color:#777;">
-      If you did not request a password reset, you can safely ignore this email.
-    </p>
-
-    <p style="margin-top:20px;">– Carely Team</p>
-
-  </div>
-</div>
-`,
+            await sendNotification({
+                from: "Admin",
+                to: responsibleUser._id || responsibleUser.id,
+                message,
+                title: "PASSWORD RESET OTP",
+                type: PASSWORD_RESET,
+                priority: "high"
             });
+            //             const mailResult = await sendMail({
+            //                 to: responsibleUser.email,
+            //                 subject: "Carely – Password Reset OTP",
 
-            if (mailResult.success) {
-                return sendResponse(
-                    res,
-                    200,
-                    "FORGOT OTP sent successfully"
-                );
-            }
+            //                 text: `
+            // =================================
+            //         CARELY PASSWORD RESET
+            // =================================
+
+            // Hello ${responsibleUser.firstName} ${responsibleUser.lastName},
+
+            // We received a request to reset your Carely account password.
+
+            // ---------------------------------
+            // Your One-Time Password (OTP)
+            // ---------------------------------
+
+            //         ${otp}
+
+            // This OTP will expire in 10 minutes.
+
+            // Do not share this code with anyone.
+
+            // If you did not request a password reset, you can safely ignore this email.
+
+            // ---------------------------------
+            // Carely Team
+            // `,
+
+            //                 html: `
+            // <div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:20px;">
+            //   <div style="max-width:500px; margin:auto; background:#ffffff; padding:30px; border-radius:8px;">
+
+            //     <h2 style="color:#2c3e50; margin-bottom:20px;">
+            //       Password Reset Request
+            //     </h2>
+
+            //     <p>Hello <strong>${responsibleUser.firstName} ${responsibleUser.lastName}</strong>,</p>
+
+            //     <p>We received a request to reset your <strong>Carely</strong> account password.</p>
+
+            //     <p>Your One-Time Password (OTP) is:</p>
+
+            //     <div style="text-align:center; margin:25px 0;">
+            //       <span style="
+            //         display:inline-block;
+            //         background:#4f46e5;
+            //         color:#ffffff;
+            //         font-size:26px;
+            //         letter-spacing:6px;
+            //         padding:12px 26px;
+            //         border-radius:6px;
+            //         font-weight:bold;
+            //       ">
+            //         ${otp}
+            //       </span>
+            //     </div>
+
+            //     <p>This OTP will expire in <strong>10 minutes</strong>.</p>
+
+            //     <p style="color:#666;">Do not share this code with anyone.</p>
+
+            //     <hr style="margin:25px 0; border:none; border-top:1px solid #eee;" />
+
+            //     <p style="font-size:13px; color:#777;">
+            //       If you did not request a password reset, you can safely ignore this email.
+            //     </p>
+
+            //     <p style="margin-top:20px;">– Carely Team</p>
+
+            //   </div>
+            // </div>
+            // `,
+            //             });
+
+            // if (mailResult.success) {
+            // }
+            return sendResponse(
+                res,
+                200,
+                "FORGOT OTP sent successfully"
+            );
         }
         // console.log("BODY: ", req.body);
 
@@ -609,83 +622,85 @@ Carely Team
             relationship,
             expiresAt: new Date(Date.now() + 10 * 60 * 1000) // 10 min
         });
+        const message = `Your OTP for linking a patient to your Carely account is ${otp}. 
+This code will expire in 10 minutes. Do not share it with anyone.`;
+        await sendNotification({ from: "Admin", to: responsibleUser._id || responsibleUser.id, message, title: "PATIENT LINKING OTP", type: RELATIONSHIP_REQUEST, priority: "high" })
+        //         const mailResult = await sendMail({
+        //             to: responsibleUser.email,
+        //             subject: "Carely – Patient Verification OTP",
 
-        const mailResult = await sendMail({
-            to: responsibleUser.email,
-            subject: "Carely – Patient Verification OTP",
+        //             text: `
+        // =================================
+        //         CARELY VERIFICATION
+        // =================================
 
-            text: `
-=================================
-        CARELY VERIFICATION
-=================================
+        // Hello,
 
-Hello,
+        // Patient Name : ${name}
+        // Relationship : ${relationship}
 
-Patient Name : ${name}
-Relationship : ${relationship}
+        // ---------------------------------
+        // Your OTP Code
+        // ---------------------------------
 
----------------------------------
-Your OTP Code
----------------------------------
+        //         ${otp}
 
-        ${otp}
+        // This OTP will expire in 10 minutes.
 
-This OTP will expire in 10 minutes.
+        // Do not share this OTP with anyone.
 
-Do not share this OTP with anyone.
+        // ---------------------------------
+        // Carely Team
+        // `,
 
----------------------------------
-Carely Team
-`,
+        //             html: `
+        // <div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:20px;">
+        //   <div style="max-width:500px; margin:auto; background:#ffffff; padding:30px; border-radius:8px;">
 
-            html: `
-<div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:20px;">
-  <div style="max-width:500px; margin:auto; background:#ffffff; padding:30px; border-radius:8px;">
+        //     <h2 style="color:#2c3e50;">Carely Patient Verification</h2>
 
-    <h2 style="color:#2c3e50;">Carely Patient Verification</h2>
+        //     <p>Hello,</p>
 
-    <p>Hello,</p>
+        //     <p><strong>Patient Name:</strong> ${name}</p>
+        //     <p><strong>Relationship:</strong> ${relationship}</p>
 
-    <p><strong>Patient Name:</strong> ${name}</p>
-    <p><strong>Relationship:</strong> ${relationship}</p>
+        //     <p>Your OTP code is:</p>
 
-    <p>Your OTP code is:</p>
+        //     <div style="text-align:center; margin:25px 0;">
+        //       <span style="
+        //         font-size:28px;
+        //         letter-spacing:6px;
+        //         background:#4f46e5;
+        //         color:#ffffff;
+        //         padding:12px 24px;
+        //         border-radius:6px;
+        //         font-weight:bold;
+        //         display:inline-block;
+        //       ">
+        //         ${otp}
+        //       </span>
+        //     </div>
 
-    <div style="text-align:center; margin:25px 0;">
-      <span style="
-        font-size:28px;
-        letter-spacing:6px;
-        background:#4f46e5;
-        color:#ffffff;
-        padding:12px 24px;
-        border-radius:6px;
-        font-weight:bold;
-        display:inline-block;
-      ">
-        ${otp}
-      </span>
-    </div>
+        //     <p>This OTP will expire in <strong>10 minutes</strong>.</p>
 
-    <p>This OTP will expire in <strong>10 minutes</strong>.</p>
+        //     <p style="color:#666;">Do not share this OTP with anyone.</p>
 
-    <p style="color:#666;">Do not share this OTP with anyone.</p>
+        //     <hr style="margin:25px 0; border:none; border-top:1px solid #eee;" />
 
-    <hr style="margin:25px 0; border:none; border-top:1px solid #eee;" />
+        //     <p style="font-size:14px;">– Carely Team</p>
 
-    <p style="font-size:14px;">– Carely Team</p>
+        //   </div>
+        // </div>
+        // `,
+        //         });
 
-  </div>
-</div>
-`,
-        });
-
-        if (mailResult.success) {
-            return sendResponse(
-                res,
-                200,
-                "OTP sent successfully"
-            );
-        }
+        // if (mailResult.success) {
+        // }
+        return sendResponse(
+            res,
+            200,
+            "OTP sent successfully"
+        );
 
 
     } catch (error) {
