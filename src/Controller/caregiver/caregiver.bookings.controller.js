@@ -78,7 +78,7 @@ const acceptBooking = async (req, res) => {
 Service starts on ${startDate} during ${booking.schedule.timeSlot}.`;
 
     await sendNotification({
-      from: "Admin",
+      from: "69a06d232c3da033572a6d99",
       to: userId,
       message,
       title: "BOOKING REQUEST ACCEPTED",
