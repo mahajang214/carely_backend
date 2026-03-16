@@ -505,16 +505,25 @@ const sendOTP = async (req, res) => {
             const message = `Password Reset OTP: ${otp}. 
 Use this code to reset your Carely account password. 
 This OTP will expire in 10 minutes. Do not share it with anyone.`;
-
             await sendNotification({
-                from: "69a06d232c3da033572a6d99",
-                to: responsibleUser._id || responsibleUser.id,
+                senderId: "69a06d232c3da033572a6d99",
+                senderModel: "AdminModal",
+                recipientId: responsibleUser._id,
+                recipientModel: "UserModal",
                 message,
                 title: "PASSWORD RESET OTP",
                 type: "password_reset",
-                priority: "high",
-                recipientModel: "UserModal"
-            });
+                priority: "high"
+            })
+            // await sendNotification({
+            //     from: "69a06d232c3da033572a6d99",
+            //     to: responsibleUser._id || responsibleUser.id,
+            //     message,
+            //     title: "PASSWORD RESET OTP",
+            //     type: "password_reset",
+            //     priority: "high",
+            //     recipientModel: "UserModal"
+            // });
             //             const mailResult = await sendMail({
             //                 to: responsibleUser.email,
             //                 subject: "Carely – Password Reset OTP",

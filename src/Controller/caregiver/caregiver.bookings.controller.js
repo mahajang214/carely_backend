@@ -78,14 +78,24 @@ const acceptBooking = async (req, res) => {
 Service starts on ${startDate} during ${booking.schedule.timeSlot}.`;
 
     await sendNotification({
-      from: "69a06d232c3da033572a6d99",
-      to: userId,
+      senderId: "69a06d232c3da033572a6d99",
+      senderModel: "AdminModal",
+      recipientId: userId,
+      recipientModel: "UserModal",
       message,
       title: "BOOKING REQUEST ACCEPTED",
       type: "service",
-      priority: "high",
-      recipientModel: "UserModal"
-    });
+      priority: "high"
+    })
+    // await sendNotification({
+    //   from: "69a06d232c3da033572a6d99",
+    //   to: userId,
+    //   message,
+    //   title: "BOOKING REQUEST ACCEPTED",
+    //   type: "service",
+    //   priority: "high",
+    //   recipientModel: "UserModal"
+    // });
     //     const mailResult = await sendMail({
     //       to: userEmail,
     //       subject: "Carely – Caregiver Accepted Your Booking",

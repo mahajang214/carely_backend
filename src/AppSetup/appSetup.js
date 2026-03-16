@@ -52,6 +52,14 @@ app.use("/api/common", commonRoutes)
 //     await sendMail({ to: process.env.MAIL_FROM, subject: "TESTING", text: "TESTING" })
 //     return res.status(200)
 // })
+router.get("/keep-alive", (req, res) => {
+    console.log("Keep alive ping:", new Date().toISOString());
+    res.status(200).json({
+        success: true,
+        message: "Server is alive"
+    });
+});
+
 
 
 // export app
