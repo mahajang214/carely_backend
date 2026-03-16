@@ -14,21 +14,28 @@ const NOTIFICATION_TYPES = {
     PASSWORD_RESET: "password_reset"
 };
 
-const sendNotification = async ({ from, to, message, title, type, priority, recipientModel }) => {
+const sendNotification = async ({
+    senderId,
+    senderModel,
+    recipientId,
+    recipientModel,
+    message,
+    title,
+    type,
+    priority
+}) => {
+
     try {
 
-        if (!from || !to || !message || !title || !type) {
-            throw new Error("Missing required fields");
-        }
-
         const newNotification = await notificationModal.create({
-            senderModel: from,
-            title,
+            senderId,
+            senderModel,
+            recipientId,
+            recipientModel,
             message,
+            title,
             type,
-            priority: priority || "normal",
-            recipientId: to,
-            recipientModel: recipientModel || "UserModal"
+            priority: priority || "normal"
         });
 
         return { success: true };
@@ -37,6 +44,7 @@ const sendNotification = async ({ from, to, message, title, type, priority, reci
         console.error("Error sending notification:", error);
         return { success: false, error: error.message };
     }
+
 };
 
 module.exports = sendNotification;
