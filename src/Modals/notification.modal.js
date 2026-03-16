@@ -58,7 +58,8 @@ const notificationSchema = new mongoose.Schema({
             "relationship_response",
             "general",
             "event_notification",
-            "password_reset"
+            "password_reset",
+            "service_completed"
         ],
         default: "system"
     },

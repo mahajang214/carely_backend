@@ -11,7 +11,7 @@ const NOTIFICATION_TYPES = {
     RELATIONSHIP_RESPONSE: "relationship_response",
     GENERAL: "general",
     EVENT_NOTIFICATION: "event_notification",
-    PASSWORD_RESET: "password_reset"
+    PASSWORD_RESET: "password_reset", SERVICE_COMPLETED: "service_completed"
 };
 
 const sendNotification = async ({

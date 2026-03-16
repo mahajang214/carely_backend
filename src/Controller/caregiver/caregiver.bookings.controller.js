@@ -241,7 +241,7 @@ const updateBookingStatus = async (req, res) => {
     const booking = await BookingModal.findOneAndUpdate(
       { _id: bookingId, caregiverId: caregiverId },
       { bookingStatus: status },
-      { returnDocument: "after" }
+      { returnDocument: "after", runValidators: true }
     );
 
     if (!booking) {
@@ -251,16 +251,20 @@ const updateBookingStatus = async (req, res) => {
       });
     }
 
-    // If completed → Add earnings
-    // if (status === "completed") {
-    //   await CaregiverModal.findByIdAndUpdate(
-    //     caregiverId,
-    //     {
-    //       $inc: { totalEarning: booking.grandTotal }
-    //     },
-    //     { new: true }
-    //   );
-    // }
+    // If completed → send notification to user for payment reminder
+    if (status === "completed") {
+      message: "Your service has been completed. Please proceed with the payment."
+      await sendNotification({
+        senderId: caregiverId,
+        senderModel: "CaregiverModal",
+        recipientId: booking.userId,
+        recipientModel: "UserModal",
+        message,
+        title: "SERVICE COMPLETED",
+        type: "service_completed",
+        priority: "high"
+      })
+    }
 
     return res.status(200).json({
       success: true,
