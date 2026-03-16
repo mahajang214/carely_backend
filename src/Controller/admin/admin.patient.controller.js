@@ -27,7 +27,7 @@ const blockPatient = async (req, res) => {
             return sendResponse(res, 404, "PaitenID not found", null);
         }
 
-        const patient = await PatientModal.findByIdAndUpdate({ _id: patientId }, { blocked: true }, { new: true })
+        const patient = await PatientModal.findByIdAndUpdate({ _id: patientId }, { blocked: true },   { returnDocument: "after" })
 
         return sendResponse(res, 200, "Patient blocked successfully", null);
     } catch (error) {
@@ -40,7 +40,7 @@ const unblockPatient = async (req, res) => {
     try {
         const { patientId } = req.params;
 
-        const patient = await PatientModal.findByIdAndUpdate({ _id: patientId }, { blocked: false }, { new: true })
+        const patient = await PatientModal.findByIdAndUpdate({ _id: patientId }, { blocked: false },   { returnDocument: "after" })
 
 
         return sendResponse(res, 200, "Patient unblocked successfully", null);

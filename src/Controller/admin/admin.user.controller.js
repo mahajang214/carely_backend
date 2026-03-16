@@ -15,7 +15,7 @@ const blockUser = async (req, res) => {
     try {
         const { userId } = req.params;
 
-        const user = await UserModal.findByIdAndUpdate({ _id: userId }, { blocked: true }, { new: true });
+        const user = await UserModal.findByIdAndUpdate({ _id: userId }, { blocked: true },   { returnDocument: "after" });
 
 
         return sendResponse(res, 200, "User blocked successfully", null);
@@ -28,7 +28,7 @@ const unblockUser = async (req, res) => {
     try {
         const { userId } = req.params;
 
-        const user = await UserModal.findByIdAndUpdate({ _id: userId }, { blocked: false }, { new: true });
+        const user = await UserModal.findByIdAndUpdate({ _id: userId }, { blocked: false },   { returnDocument: "after" });
 
         return sendResponse(res, 200, "User unblocked successfully", null);
     } catch (error) {

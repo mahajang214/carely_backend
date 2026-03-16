@@ -20,7 +20,7 @@ const getMyNotifications = async (req, res) => {
 const markNotificationAsRead = async (req, res) => {
     try {
         const { id: notificationId } = req.params
-        const isNoficationsValid = await NotificationModal.findByIdAndUpdate(notificationId, { isRead: true }, { new: true });
+        const isNoficationsValid = await NotificationModal.findByIdAndUpdate(notificationId, { isRead: true },  { returnDocument: "after" });
         if (!isNoficationsValid) {
             return sendResponse(res, 400, "Not Valid", null)
         }

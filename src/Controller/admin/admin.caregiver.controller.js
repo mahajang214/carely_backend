@@ -18,7 +18,7 @@ const blockCaregiver = async (req, res) => {
             return sendResponse(res, 400, "caregiverId is required", null);
         }
 
-        const caregiver = await CaregiverModal.findByIdAndUpdate({ _id: caregiverId }, { blocked: true }, { new: true });
+        const caregiver = await CaregiverModal.findByIdAndUpdate({ _id: caregiverId }, { blocked: true }, { returnDocument: "after" });
 
 
 
@@ -33,7 +33,7 @@ const unblockCaregiver = async (req, res) => {
     try {
         const { caregiverId } = req.params;
 
-        const caregiver = await CaregiverModal.findByIdAndUpdate({ _id: caregiverId }, { blocked: false }, { new: true })
+        const caregiver = await CaregiverModal.findByIdAndUpdate({ _id: caregiverId }, { blocked: false },   { returnDocument: "after" })
 
         return sendResponse(res, 200, "Caregiver unblocked successfully", null);
     } catch (error) {
@@ -74,7 +74,7 @@ const verifyCaregiver = async (req, res) => {
     try {
         const { caregiverId } = req.params;
 
-        const caregiver = await CaregiverModal.findByIdAndUpdate({ _id: caregiverId }, { verified: true }, { new: true });
+        const caregiver = await CaregiverModal.findByIdAndUpdate({ _id: caregiverId }, { verified: true },   { returnDocument: "after" });
 
 
         return sendResponse(res, 200, "Caregiver verified successfully", null);
@@ -87,7 +87,7 @@ const rejectCaregiverVerification = async (req, res) => {
     try {
         const { caregiverId } = req.params;
 
-        const caregiver = await CaregiverModal.findByIdAndUpdate({ _id: caregiverId }, { verified: false }, { new: true });
+        const caregiver = await CaregiverModal.findByIdAndUpdate({ _id: caregiverId }, { verified: false },  { returnDocument: "after" });
 
         return sendResponse(res, 200, "Caregiver verification rejected successfully", null);
     } catch (error) {

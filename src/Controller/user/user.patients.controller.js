@@ -34,7 +34,7 @@ const deletePatient = async (req, res) => {
                     linkedPatients: { patientId: patientId }
                 }
             },
-            { new: true }
+         { returnDocument: "after" }
         );
 
         return sendResponse(res, 200, "Patient removed from linkedPatients");
