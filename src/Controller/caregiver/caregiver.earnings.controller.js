@@ -18,7 +18,7 @@ const getCaregiverEarnings = async (req, res) => {
         paymentStatus: "confirmed",
       })
       .select("caregiverEarning platformCommission")
-      .lean();
+      .lean().sort({ createdAt: -1 })
 
     // Calculate totals
     const totalEarning = transactions.reduce(

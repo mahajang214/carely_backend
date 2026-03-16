@@ -3,7 +3,7 @@ const sendResponse = require('../../utils/apiResponse');
 
 const getAllBookings = async (req, res) => {
     try {
-        const bookings = await BookingModal.find().select("bookingStatus _id").lean()
+        const bookings = await BookingModal.find().select("bookingStatus _id").lean().sort({ createdAt: -1 })
 
         return sendResponse(res, 200, "Bookings retrieved successfully", bookings);
     } catch (error) {

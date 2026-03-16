@@ -3,7 +3,7 @@ const sendResponse = require("../../utils/apiResponse");
 
 const getAllCaregivers = async (req, res) => {
     try {
-        const caregivers = await CaregiverModal.find().select("+verificationDocuments +mobileNumber")
+        const caregivers = await CaregiverModal.find().select("+verificationDocuments +mobileNumber").sort({ createdAt: -1 })
         return sendResponse(res, 200, "Caregivers retrieved successfully", caregivers);
     } catch (error) {
         return sendResponse(res, 500, "Failed to retrieve caregivers", null);

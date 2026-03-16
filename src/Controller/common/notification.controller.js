@@ -7,7 +7,7 @@ const getMyNotifications = async (req, res) => {
         const userId = req.client.id || req.client._id
         const myNofications = await NotificationModal.find({
             recipientId: userId,
-        }).select("title message isRead createdAt")
+        }).select("title message isRead createdAt").sort({ createdAt: -1 })
         if (!myNofications) {
             return sendResponse(res, 204, "No content", null)
         }
@@ -20,7 +20,7 @@ const getMyNotifications = async (req, res) => {
 const markNotificationAsRead = async (req, res) => {
     try {
         const { id: notificationId } = req.params
-        const isNoficationsValid = await NotificationModal.findByIdAndUpdate(notificationId, { isRead: true },  { returnDocument: "after" });
+        const isNoficationsValid = await NotificationModal.findByIdAndUpdate(notificationId, { isRead: true }, { returnDocument: "after" });
         if (!isNoficationsValid) {
             return sendResponse(res, 400, "Not Valid", null)
         }

@@ -3,7 +3,7 @@ const sendResponse = require("../../utils/apiResponse");
 
 const getAllUsers = async (req, res) => {
     try {
-        const users = await UserModal.find().select("+mobileNumber")
+        const users = await UserModal.find().select("+mobileNumber").sort({ createdAt: -1 })
         return sendResponse(res, 200, "Users retrieved successfully", users);
     } catch (error) {
         return sendResponse(res, 500, "Failed to retrieve users", null);

@@ -4,7 +4,7 @@ const sendResponse = require("../../utils/apiResponse");
 
 const getTransactions = async (res, req) => {
     try {
-        const transactions = await TransactionModal.find();
+        const transactions = await TransactionModal.find().sort({ createdAt: -1 })
         if (!transactions) {
             return sendResponse(res, 204, "No Content", null)
         }

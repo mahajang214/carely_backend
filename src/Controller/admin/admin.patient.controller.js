@@ -3,7 +3,7 @@ const sendResponse = require("../../utils/apiResponse");
 
 const getAllPatients = async (req, res) => {
     try {
-        const patients = await PatientModal.find().select("firstName lastName _id")
+        const patients = await PatientModal.find().select("firstName lastName _id").sort({ createdAt: -1 })
         return sendResponse(res, 200, "Patients retrieved successfully", patients);
     } catch (error) {
         return sendResponse(res, 500, "Failed to retrieve patients", null);
