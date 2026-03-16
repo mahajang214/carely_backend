@@ -274,23 +274,12 @@ const cancelBooking = async (req, res) => {
             return sendResponse(res, 400, "Booking ID is required", null);
         }
 
-        const booking = await BookingModal.findById(bookingId);
+        const booking = await BookingModal.findByIdAndUpdate(bookingId, { requestStatus: "cancelled" }, { new: true });
 
         if (!booking) {
             return sendResponse(res, 404, "Booking not found", null);
         }
 
-        if (booking.requestStatus === "accepted") {
-            return sendResponse(
-                res,
-                400,
-                "Booking already accepted. Please raise a complaint instead.",
-                null
-            );
-        }
-
-        booking.requestStatus = "cancelled";
-        await booking.save();
 
         return sendResponse(res, 200, "Booking cancelled successfully", booking);
 
