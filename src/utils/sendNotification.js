@@ -16,27 +16,27 @@ const NOTIFICATION_TYPES = {
 
 const sendNotification = async ({ from, to, message, title, type, priority, recipientModel }) => {
     try {
-        if (!from || !to || !message || !title || !type || !recipientModel) {
-            throw new Error('Missing required fields: from, to, message, title, and type are all required.');
+
+        if (!from || !to || !message || !title || !type) {
+            throw new Error("Missing required fields");
         }
+
         const newNotification = await notificationModal.create({
-            senderModel: from.model,
+            senderModel: from,
             title,
             message,
             type,
             priority: priority || "normal",
             recipientId: to,
-            recipientModal: recipientModel || "UserModal"
+            recipientModel: recipientModel || "UserModal"
         });
 
+        return { success: true };
 
-        // Simulate sending notification (e.g., via email or SMS)
-        // console.log(`Notification sent from ${from} to ${to}: ${message}`);
-        return { success: true, message: 'Notification sent successfully' };
     } catch (error) {
-        console.error('Error sending notification:', error);
-        return { success: false, message: 'Failed to send notification', error: error.message };
+        console.error("Error sending notification:", error);
+        return { success: false, error: error.message };
     }
-}
+};
 
 module.exports = sendNotification;
