@@ -82,7 +82,7 @@ Service starts on ${startDate} during ${booking.schedule.timeSlot}.`;
       to: userId,
       message,
       title: "BOOKING REQUEST ACCEPTED",
-      type: SERVICE,
+      type: "service",
       priority: "high"
     });
     //     const mailResult = await sendMail({
