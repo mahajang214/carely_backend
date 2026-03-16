@@ -274,7 +274,7 @@ const cancelBooking = async (req, res) => {
             return sendResponse(res, 400, "Booking ID is required", null);
         }
 
-        const booking = await BookingModal.findByIdAndUpdate(bookingId, { requestStatus: "cancelled" }, { returnDocument: "after" });
+        const booking = await BookingModal.findByIdAndUpdate(bookingId, { bookingStatus: "cancelled" }, { returnDocument: "after" });
 
         if (!booking) {
             return sendResponse(res, 404, "Booking not found", null);
