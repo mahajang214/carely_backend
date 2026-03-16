@@ -253,7 +253,7 @@ const updateBookingStatus = async (req, res) => {
 
     // If completed → send notification to user for payment reminder
     if (status === "completed") {
-      message: "Your service has been completed. Please proceed with the payment."
+      const message = "Your service has been completed. Please proceed with the payment."
       await sendNotification({
         senderId: caregiverId,
         senderModel: "CaregiverModal",
