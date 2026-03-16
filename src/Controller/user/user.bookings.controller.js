@@ -268,7 +268,7 @@ const getMyBookings = async (req, res) => {
 // ==========================
 const cancelBooking = async (req, res) => {
     try {
-        const { bookingId } = req.params;  // ✅ fixed destructuring
+        const { id: bookingId } = req.params;  // ✅ fixed destructuring
 
         if (!bookingId) {
             return sendResponse(res, 400, "Booking ID is required", null);
