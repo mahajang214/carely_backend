@@ -83,7 +83,8 @@ Service starts on ${startDate} during ${booking.schedule.timeSlot}.`;
       message,
       title: "BOOKING REQUEST ACCEPTED",
       type: "service",
-      priority: "high"
+      priority: "high",
+      recipientModel: "UserModal"
     });
     //     const mailResult = await sendMail({
     //       to: userEmail,

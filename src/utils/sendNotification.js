@@ -11,16 +11,13 @@ const NOTIFICATION_TYPES = {
     RELATIONSHIP_RESPONSE: "relationship_response",
     GENERAL: "general",
     EVENT_NOTIFICATION: "event_notification",
-    PASSWORD_RESET:"password_reset"
+    PASSWORD_RESET: "password_reset"
 };
 
-const sendNotification = async ({ from, to, message, title, type, priority }) => {
+const sendNotification = async ({ from, to, message, title, type, priority, recipientModel }) => {
     try {
-        if (!from || !to || !message || !title || !type) {
+        if (!from || !to || !message || !title || !type || !recipientModel) {
             throw new Error('Missing required fields: from, to, message, title, and type are all required.');
-        }
-        if (!Object.values(NOTIFICATION_TYPES).includes(type)) {
-            throw new Error(`Invalid notification type. Valid types are: ${Object.values(NOTIFICATION_TYPES).join(", ")}`);
         }
         const newNotification = await notificationModal.create({
             senderModel: from.model,
@@ -28,8 +25,8 @@ const sendNotification = async ({ from, to, message, title, type, priority }) =>
             message,
             type,
             priority: priority || "normal",
-            recipientId: to.id,
-            recipientModal: to.model
+            recipientId: to,
+            recipientModal: recipientModel || "UserModal"
         });
 
 

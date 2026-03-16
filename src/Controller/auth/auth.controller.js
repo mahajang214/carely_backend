@@ -512,7 +512,8 @@ This OTP will expire in 10 minutes. Do not share it with anyone.`;
                 message,
                 title: "PASSWORD RESET OTP",
                 type: "password_reset",
-                priority: "high"
+                priority: "high",
+                recipientModel: "UserModal"
             });
             //             const mailResult = await sendMail({
             //                 to: responsibleUser.email,
@@ -604,7 +605,7 @@ This OTP will expire in 10 minutes. Do not share it with anyone.`;
         if (!name || !relationship) {
             return sendResponse(res, 400, "Name and relationship are required");
         }
-        const responsibleUser = await UserModal.findById(userId).select("+email");
+        const responsibleUser = await UserModal.findById(userId).select("+email _id");
         if (!responsibleUser) {
             return sendResponse(res, 404, "Responsible user not found");
         }
@@ -624,7 +625,7 @@ This OTP will expire in 10 minutes. Do not share it with anyone.`;
         });
         const message = `Your OTP for linking a patient to your Carely account is ${otp}. 
 This code will expire in 10 minutes. Do not share it with anyone.`;
-        await sendNotification({ from: "Admin", to: responsibleUser._id || responsibleUser.id, message, title: "PATIENT LINKING OTP", type: "relationship_request", priority: "high" })
+        await sendNotification({ from: "Admin", to: userId || responsibleUser._id || responsibleUser.id, message, title: "PATIENT LINKING OTP", type: "relationship_request", priority: "high", recipientModel: "UserModal" })
         //         const mailResult = await sendMail({
         //             to: responsibleUser.email,
         //             subject: "Carely – Patient Verification OTP",
