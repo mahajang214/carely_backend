@@ -196,8 +196,8 @@ const cancleBooking = async (req, res) => {
     const { bookingId } = req.params;
 
     const booking = await BookingModal.findOneAndUpdate(
-      { _id: bookingId, caregiverId: req.client.id },
-      { status: "rejected" },
+      { _id: bookingId, caregiverId: req.client.id || req.client._id },
+      { bookingStatus: "cancelled" },
       { returnDocument: "after" }
     );
 
